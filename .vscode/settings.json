@@ -1,0 +1,5 @@
+{
+    "[typescript][javascript][json][jsonc][markdown]": {
+        "editor.formatOnSave": true
+    }
+}

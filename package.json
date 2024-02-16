@@ -1,0 +1,36 @@
+{
+  "name": "cloudflare-turnstile-widget",
+  "version": "0.0.1",
+  "description": "Framework agnostic widget for Cloudflare's open source CAPTCHA turnstile",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "((node -e \"if (!require('fs').existsSync('./example/node_modules')) { process.exit(1) } \") || (cd ./example && npm i && npm run start)) && cd ./example && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rezo12/cloudflare-turnstile-widget.git"
+  },
+  "keywords": [
+    "cloudflare",
+    "turnstile",
+    "widget",
+    "typescript"
+  ],
+  "author": "Benjamin Fourie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rezo12/cloudflare-turnstile-widget/issues"
+  },
+  "homepage": "https://github.com/rezo12/cloudflare-turnstile-widget#readme",
+  "devDependencies": {
+    "@types/cloudflare-turnstile": "^0.1.3",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  }
+}
