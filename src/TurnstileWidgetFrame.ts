@@ -1,4 +1,4 @@
-import type { BridgeInfo, WidgetEventDetail } from "./TurnstileWidget";
+import type { BridgeInfo, WidgetEventDetail, TurnstileSize } from "./TurnstileWidget";
 
 export class TurnstileWidgetFrame extends HTMLElement {
 
@@ -6,7 +6,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
 
     /**
      * The identifier passed down from the `turnstile-widget` which is hosting the frame.
-     */
+    */
     public static get currentIdentifier(): string | undefined {
         return TurnstileWidgetFrame._currentIdentifier;
     }
@@ -16,16 +16,44 @@ export class TurnstileWidgetFrame extends HTMLElement {
     }
 
     /**
-     * The siteKey that is passed down from the widget.
+     * The sitekey that is passed down from the widget.
      * @attr
     */
     public get sitekey(): string | null {
-        return this.getAttribute('siteKey');
+        return this.getAttribute('sitekey');
     }
 
     public set sitekey(value: string) {
-        if (this.getAttribute('siteKey') !== value) {
-            this.setAttribute('siteKey', value);
+        if (this.getAttribute('sitekey') !== value) {
+            this.setAttribute('sitekey', value);
+        }
+    }
+
+    /**
+     * The theme that is passed down from the widget.
+     * @attr
+    */
+    public get theme(): Turnstile.Theme | null {
+        return this.getAttribute('theme') as Turnstile.Theme;
+    }
+
+    public set theme(value: string) {
+        if (this.getAttribute('theme') !== value) {
+            this.setAttribute('theme', value);
+        }
+    }
+
+    /**
+     * The theme that is passed down from the widget.
+     * @attr
+    */
+    public get size(): TurnstileSize | null {
+        return this.getAttribute('size') as TurnstileSize;
+    }
+
+    public set size(value: string) {
+        if (this.getAttribute('size') !== value) {
+            this.setAttribute('size', value);
         }
     }
 
@@ -43,16 +71,22 @@ export class TurnstileWidgetFrame extends HTMLElement {
     */
     connectedCallback(): void {
         const div = document.createElement('div');
+        div.style.height = '100%';
         this.appendChild(div);
 
         const widgetLoad = (identifier: string) => {
             div.id = identifier;
-            window.turnstile.ready(() => {
+            turnstile.ready(() => {
                 turnstile.render(div, {
                     sitekey: this.sitekey!,
                     callback: (token) => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'success', token);
-                    }
+                    },
+                    "error-callback": () => {
+                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error');
+                    },
+                    theme: this.theme ?? 'auto'
+                    //size: this.size ?? 'normal'
                 })
             });
         }
@@ -240,8 +274,5 @@ customElements.define('turnstile-widget-frame', TurnstileWidgetFrame);
 declare global {
     interface HTMLElementTagNameMap {
         'turnstile-widget-frame': TurnstileWidgetFrame;
-    }
-    interface Window {
-        turnstile: any
     }
 }

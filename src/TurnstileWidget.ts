@@ -13,17 +13,37 @@ export class TurnstileWidget extends HTMLElement {
     */
     public readonly identifier: string = TurnstileWidgetFrame.uuidv4();
 
+    public get size(): TurnstileSize | null {
+        return this.getAttribute('size') as TurnstileSize;
+    }
+
+    public set size(value: string) {
+        if (this.getAttribute('size') !== value) {
+            this.setAttribute('size', value);
+        }
+    }
+
+    public get theme(): Turnstile.Theme | null {
+        return this.getAttribute('theme') as Turnstile.Theme;
+    }
+
+    public set theme(value: string) {
+        if (this.getAttribute('theme') !== value) {
+            this.setAttribute('theme', value);
+        }
+    }
+
     /**
      * Every widget has a sitekey. This sitekey is associated with the corresponding widget configuration and is created upon the widget creation.
      * @attr
     */
-    public get siteKey(): string | null {
-        return this.getAttribute('siteKey');
+    public get sitekey(): string | null {
+        return this.getAttribute('sitekey');
     }
 
-    public set siteKey(value: string) {
-        if (this.getAttribute('siteKey') !== value) {
-            this.setAttribute('siteKey', value);
+    public set sitekey(value: string) {
+        if (this.getAttribute('sitekey') !== value) {
+            this.setAttribute('sitekey', value);
         }
     }
 
@@ -54,33 +74,29 @@ export class TurnstileWidget extends HTMLElement {
         style.textContent = `
             .body {
                 border: none;
+                height: ${this.size === 'compact' ? '120px;' : '65px;'}
+                width: ${this.size === 'compact' ? '130px;' : '300px;'}
+                margin: 0;
+                overflow: hidden;
             }
 
             :host {
                 position: relative;
             }
-		`;
+        `;
 
         shadow.appendChild(style);
 
         this.iframe = document.createElement('iframe');
-
-        if (this.id) {
-            this.iframe.id = this.id;
-        }
-
         this.iframe.classList.add('body');
-        this.iframe.style.width = '100%';
-        this.iframe.style.height = '100%';
-        this.iframe.setAttribute('part', 'frame');
 
         this.iframe.srcdoc = `
             <head>
                 <script src="${SCRIPT_URL}?render=explicit"></script>
                 <script type="module" src="${import.meta.url}"></script>
             </head>
-            <body>
-                <turnstile-widget-frame siteKey=${this.siteKey}></turnstile-widget-frame>
+            <body style="border: none; height: ${this.size === 'compact' ? '120px;' : '65px;'} width: ${this.size === 'compact' ? '130px;' : '300px;'} margin: 0; overflow: hidden;">
+                <turnstile-widget-frame sitekey=${this.sitekey} size="${this.size}" theme=${this.theme}></turnstile-widget-frame>
             </body>
         `;
 
@@ -250,6 +266,8 @@ export type WidgetEventDetail<T = any, U = any> = {
     content: T;
     callback?: (detail: U) => void;
 };
+
+export type TurnstileSize = 'normal' | 'compact';
 
 customElements.define('turnstile-widget', TurnstileWidget);
 
