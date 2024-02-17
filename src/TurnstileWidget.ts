@@ -1,4 +1,4 @@
-import { TurnstileWidgetFrame } from "./TurnstileWidgetFrame.js";
+import { TurnstileWidgetFrame } from './TurnstileWidgetFrame.js';
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
@@ -47,7 +47,7 @@ export class TurnstileWidget extends HTMLElement {
         }
     }
 
-    private componentMessageListener = ((event: MessageEvent) => {
+    private componentMessageListener = ((event: MessageEvent): void => {
         const eventData = event.data as BridgeInfo<unknown>;
         // Check if received message is a widget message from this wrapper's hosted widget
         if (
@@ -71,11 +71,14 @@ export class TurnstileWidget extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
         const style = document.createElement('style');
 
+        const height = this.size === 'compact' ? '120px;' : '65px;'
+        const width = this.size === 'compact' ? '130px;' : '300px;'
+
         style.textContent = `
             .body {
                 border: none;
-                height: ${this.size === 'compact' ? '120px;' : '65px;'}
-                width: ${this.size === 'compact' ? '130px;' : '300px;'}
+                height: ${height}
+                width: ${width}
                 margin: 0;
                 overflow: hidden;
             }
@@ -95,11 +98,12 @@ export class TurnstileWidget extends HTMLElement {
                 <script src="${SCRIPT_URL}?render=explicit"></script>
                 <script type="module" src="${import.meta.url}"></script>
             </head>
-            <body style="border: none; height: ${this.size === 'compact' ? '120px;' : '65px;'} width: ${this.size === 'compact' ? '130px;' : '300px;'} margin: 0; overflow: hidden;">
+            <body style="border: none; height: ${height} width: ${width} margin: 0; overflow: hidden;">
                 <turnstile-widget-frame sitekey=${this.sitekey} size="${this.size}" theme=${this.theme}></turnstile-widget-frame>
             </body>
         `;
 
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.iframe.addEventListener('load', () => this.frameLoaded());
 
         shadow.appendChild(this.iframe);
@@ -110,7 +114,7 @@ export class TurnstileWidget extends HTMLElement {
     */
     connectedCallback(): void {
         // Listen for messages on the application window. Used for communication with the child widget.
-        window.addEventListener(`message`, this.componentMessageListener);
+        window.addEventListener('message', this.componentMessageListener);
     }
 
     /**
@@ -125,7 +129,7 @@ export class TurnstileWidget extends HTMLElement {
      * Dispatch a custom event to say the iframe is loaded, the TurnstileWidgetFrame component listens to this event.
     */
     // eslint-disable-next-line @typescript-eslint/require-await
-    private async frameLoaded() {
+    private async frameLoaded(): Promise<void> {
         // Raise frame load event
         this.dispatchEvent(
             new CustomEvent('frame-load', {
@@ -138,14 +142,14 @@ export class TurnstileWidget extends HTMLElement {
         this.messageFrame('frame-load', this.identifier);
     }
 
-    private frameMessageReceived<T>(event: MessageEvent<BridgeInfo<T>>) {
+    private frameMessageReceived<T>(event: MessageEvent<BridgeInfo<T>>): void {
         // Create and dispatch custom event based on bridge event info
         const evt: CustomEventInit<WidgetEventDetail<T>> = {
             detail: {
                 content: event.data.detail,
                 // Check whether a temporary callback event has been provided, and if so, setup function to return the callback response.
                 callback: event.data.callbackId
-                    ? (detail: unknown) => {
+                    ? (detail: unknown): void => {
                         this.messageFrame(event.data.callbackId as string, detail);
                     }
                     : undefined
@@ -182,7 +186,7 @@ export class TurnstileWidget extends HTMLElement {
         timeout?: number,
         timeoutCallback?: () => void,
         callbackIdentifierPrefix = 'widget-callback'
-    ) {
+    ): void {
         const frameWindow = this.iframe.contentWindow;
         let callbackId: string | undefined = undefined;
 
@@ -192,11 +196,11 @@ export class TurnstileWidget extends HTMLElement {
             // If callback function is specified, setup temporary event for callback response
             callbackId = `${callbackIdentifierPrefix}|${TurnstileWidgetFrame.uuidv4()}`;
 
-            let callbackHandler = (e: Event) => {
+            let callbackHandler = (e: Event): void => {
                 if (resolved === null) {
                     resolved = true;
                     window.removeEventListener(callbackId as string, callbackHandler);
-                    // eslint-disable-next-line callback-return
+                    // eslint-disable-next-line callback-return, @typescript-eslint/no-unsafe-argument
                     callback((e as CustomEvent).detail);
                 }
             };
@@ -234,7 +238,7 @@ export class TurnstileWidget extends HTMLElement {
      * @param callbackIdentifierPrefix (Optional) Prefix to apply on generated widget callback id.
     */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    messageFrameAsync<T = any, U = any>(eventName: string, detail?: T, timeout?: number, callbackIdentifierPrefix = 'widget-callback') {
+    messageFrameAsync<T = any, U = any>(eventName: string, detail?: T, timeout?: number, callbackIdentifierPrefix = 'widget-callback'): Promise<U> {
         return new Promise<U>((resolve, reject) => {
             try {
                 this.messageFrame(
@@ -242,7 +246,7 @@ export class TurnstileWidget extends HTMLElement {
                     detail,
                     resolve,
                     timeout,
-                    timeout ? () => reject(new Error(`No response received for '${eventName}' in the given timeout: ${timeout}ms`)) : undefined,
+                    timeout ? (): void => reject(new Error(`No response received for '${eventName}' in the given timeout: ${timeout}ms`)) : undefined,
                     callbackIdentifierPrefix
                 );
             } catch (error) {

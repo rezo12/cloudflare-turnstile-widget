@@ -1,4 +1,4 @@
-import type { BridgeInfo, WidgetEventDetail, TurnstileSize } from "./TurnstileWidget";
+import type { BridgeInfo, WidgetEventDetail, TurnstileSize } from './TurnstileWidget';
 
 export class TurnstileWidgetFrame extends HTMLElement {
 
@@ -74,7 +74,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
         div.style.height = '100%';
         this.appendChild(div);
 
-        const widgetLoad = (identifier: string) => {
+        const widgetLoad = (identifier: string): void => {
             div.id = identifier;
             turnstile.ready(() => {
                 turnstile.render(div, {
@@ -82,7 +82,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
                     callback: (token) => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'success', token);
                     },
-                    "error-callback": () => {
+                    'error-callback': () => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error');
                     },
                     theme: this.theme ?? 'auto'
@@ -105,6 +105,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
      * @param timeoutCallback (Optional) Callback function to invoke if response timeout is exceeded
      * @param callbackIdentifierPrefix (Optional) Prefix to apply on generated widget callback id
     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static messageApplication<T, U = any>(
         identifier: string,
         eventName: string,
@@ -113,7 +114,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
         timeout?: number,
         timeoutCallback?: () => void,
         callbackIdentifierPrefix = 'widget-callback'
-    ) {
+    ): void {
         if (window === window.parent) {
             throw new Error('No parent application to message!');
         }
@@ -134,11 +135,11 @@ export class TurnstileWidgetFrame extends HTMLElement {
             const callbackId = `${callbackIdentifierPrefix}|${TurnstileWidgetFrame.uuidv4()}`;
             bridgeEvent.callbackId = callbackId;
 
-            const callbackHandler = (e: WidgetEventDetail) => {
+            const callbackHandler = (e: WidgetEventDetail): void => {
                 if (resolved === null) {
                     resolved = true;
                     TurnstileWidgetFrame.removeEventListener(callbackListener);
-                    // eslint-disable-next-line callback-return
+                    // eslint-disable-next-line callback-return, @typescript-eslint/no-unsafe-argument
                     callback(e.content);
                 }
             };
@@ -175,6 +176,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
             (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
         );
@@ -195,7 +197,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
         detail: T,
         timeout = 3000,
         callbackIdentifierPrefix = 'widget-callback'
-    ) {
+    ): Promise<U> {
         return new Promise<U>((resolve, reject) => {
             try {
                 TurnstileWidgetFrame.messageApplication(
@@ -218,7 +220,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
      * Can be used by a widget application to retrieve its identifier from the widget component.
      * @param frameLoaded The callback to invoke when the `frame-load` event occurs.
      */
-    public static initialise(frameLoaded: (identifier: string) => void) {
+    public static initialise(frameLoaded: (identifier: string) => void): void {
         // Listen for messages on the widget window. Used for communication with the parent application
         const listener = TurnstileWidgetFrame.addEventListener(`frame-load`, (event: WidgetEventDetail<string>) => {
             TurnstileWidgetFrame.currentIdentifier = event.content;
@@ -234,9 +236,9 @@ export class TurnstileWidgetFrame extends HTMLElement {
      * @returns Event listener instance that can be used to remove the listener via `Widget.removeEventListener`
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public static addEventListener<T = any, U = any>(eventName: string, listener: (event: WidgetEventDetail<T, U>) => void) {
+    public static addEventListener<T = any, U = any>(eventName: string, listener: (event: WidgetEventDetail<T, U>) => void): (event: MessageEvent<BridgeInfo<T>>) => void {
         // Listen for messages on the widget window. Used for communication with the parent application
-        const messageListener = (event: MessageEvent<BridgeInfo<T>>) => {
+        const messageListener = (event: MessageEvent<BridgeInfo<T>>): void => {
             // Check if received message is a parent application message
             if (
                 typeof event.data === `object` &&
@@ -248,7 +250,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
                 listener({
                     content: event.data.detail as T,
                     callback: event.data.callbackId
-                        ? (detail: U) => {
+                        ? (detail: U): void => {
                             TurnstileWidgetFrame.messageApplication(event.data.identifier, event.data.callbackId as string, detail);
                         }
                         : undefined
@@ -264,7 +266,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
      * @param messageListener The listener instance created by `Widget.addEventListener` to remove
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public static removeEventListener<T = any>(messageListener: (event: MessageEvent<BridgeInfo<T>>) => void) {
+    public static removeEventListener<T = any>(messageListener: (event: MessageEvent<BridgeInfo<T>>) => void): void {
         window.removeEventListener(`message`, messageListener);
     }
 }

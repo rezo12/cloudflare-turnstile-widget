@@ -1,5 +1,8 @@
 {
     "[typescript][javascript][json][jsonc][markdown]": {
         "editor.formatOnSave": true
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
     }
 }
