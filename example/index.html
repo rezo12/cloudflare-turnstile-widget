@@ -11,6 +11,17 @@
     </head>
     <body>
         <h1>This is an application with a turnstile-widget hosted in its own frame.</h1>
-        <turnstile-widget sitekey="1x00000000000000000000AA" size="normal" theme="dark"></turnstile-widget>
+        <turnstile-widget sitekey="1x00000000000000000000AA" size="compact" theme="dark"></turnstile-widget>
     </body>
 </html>
+
+<!-- Use the following sitekey's for testing:
+
+Sitekey	                    Description	                    Visibility
+1x00000000000000000000AA	Always passes	                visible
+2x00000000000000000000AB	Always blocks	                visible
+1x00000000000000000000BB	Always passes	                invisible
+2x00000000000000000000BB	Always blocks	                invisible
+3x00000000000000000000FF	Forces an interactive challenge	visible
+
+See https://developers.cloudflare.com/turnstile/reference/testing/ for more -->
