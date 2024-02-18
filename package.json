@@ -31,7 +31,9 @@
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "all-contributors-cli": "^6.26.1",
+    "command-line-args": "^5.2.1",
     "eslint": "^8.56.0",
+    "package-json": "^9.0.0",
     "typescript": "^5.3.3"
   }
 }
