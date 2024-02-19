@@ -14,30 +14,6 @@ export class TurnstileWidget extends HTMLElement {
      */
     public readonly identifier: string = TurnstileWidgetFrame.uuidv4();
 
-    public get size(): TurnstileSize | null {
-        return this.getAttribute('size') as TurnstileSize;
-    }
-
-    public set size(value: string | null) {
-        if (this.getAttribute('size') !== value && value) {
-            this.setAttribute('size', value);
-        }
-    }
-
-    public get theme(): Turnstile.Theme | null {
-        return this.getAttribute('theme') as Turnstile.Theme;
-    }
-
-    public set theme(value: string | null) {
-        if (this.getAttribute('theme') !== value && value) {
-            this.setAttribute('theme', value);
-        }
-    }
-
-    /**
-     * Every widget has a sitekey. This sitekey is associated with the corresponding widget configuration and is created upon the widget creation.
-     * @attr
-     */
     public get sitekey(): string | null {
         return this.getAttribute('sitekey');
     }
@@ -48,11 +24,33 @@ export class TurnstileWidget extends HTMLElement {
         }
     }
 
+    public get theme(): TurnstileTheme | null {
+        return this.getAttribute('theme') as TurnstileTheme;
+    }
+
+    public set theme(value: TurnstileTheme | null) {
+        if (this.getAttribute('theme') !== value && value) {
+            this.setAttribute('theme', value);
+        }
+    }
+
+    public get size(): TurnstileSize | null {
+        return this.getAttribute('size') as TurnstileSize;
+    }
+
+    public set size(value: TurnstileSize | null) {
+        if (this.getAttribute('size') !== value && value) {
+            this.setAttribute('size', value);
+        }
+    }
+
     private get widgetFrameURL(): string | undefined {
         const explicitFrameURL = window['turnstile-widget-frame-module-url'];
+
         if (explicitFrameURL) {
             return explicitFrameURL;
         }
+
         return `https://www.unpkg.com/cloudflare-turnstile-widget@${VERSION}/dist/TurnstileWidgetFrame.js`;
     }
 
@@ -65,7 +63,7 @@ export class TurnstileWidget extends HTMLElement {
     }).bind(this);
 
     /**
-     * Initialises the component.
+     * Initializes the component.
      *
      * @hideconstructor
      */
@@ -260,8 +258,6 @@ export type WidgetEventDetail<T = any, U = any> = {
     content: T;
     callback?: (detail: U) => void;
 };
-
-export type TurnstileSize = 'normal' | 'compact';
 
 customElements.define('turnstile-widget', TurnstileWidget);
 
