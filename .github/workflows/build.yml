@@ -1,0 +1,100 @@
+# Build and publish the package to NPM and version bump each time a new release is published on Github, or a push is made to the develop branch.
+
+name: Build
+
+on:
+    push:
+        branches: [develop]
+        paths-ignore:
+            - '*.md'
+            - '**/*.md'
+            - 'package.json'
+            - 'package-lock.json'
+
+    release:
+        types:
+            - published
+
+permissions: write-all
+
+env:
+    LOCAL_VERSION:
+jobs:
+    build-and-release:
+        concurrency:
+            group: ${{ github.ref }}
+            cancel-in-progress: true
+
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [16.x]
+
+        steps:
+            - name: Checkout 🛎️
+              uses: actions/checkout@v3
+              with:
+                  persist-credentials: true
+                  fetch-depth: 0
+                  token: ${{ secrets.PROTECTED_TOKEN }}
+
+            - name: Ensure branch up to date 🌿
+              # Only on branch pushes, not on tagged releases
+              if: ${{ startsWith(github.ref, 'refs/heads/') }}
+              run: |
+                  git pull
+
+            - name: Use Node.js 16.x ✔
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.x
+                  registry-url: 'https://registry.npmjs.org'
+                  always-auth: true
+
+            - name: Install Package Dependencies 🔗
+              run: |
+                  npm ci
+
+            - name: Build Project 🔧
+              run: npm run build
+
+            - name: Bump patch version for beta ☝
+              # Develop branch only
+              if: github.ref == 'refs/heads/develop'
+              run: |
+                  node scripts/unique-version.mjs --tag "beta"
+
+
+            - name: Auto Commit Changes 👩‍💻
+              uses: stefanzweifel/git-auto-commit-action@v4
+              # Develop branch only
+              if: github.ref == 'refs/heads/develop'
+              with:
+                  commit_message: Updated docs
+                  branch: ${{ env.GITHUB_REF_NAME }}
+
+            - name: Update LOCAL_VERSION ⬆
+              # Branches only, not releases
+              if: ${{ startsWith(github.ref, 'refs/heads/') }}
+              run: |
+                  LOCAL_VERSION=$(cat package.json | jq -r .version | awk '{ print tolower($1) }')
+                  echo LOCAL_VERSION=${LOCAL_VERSION} >> $GITHUB_ENV
+
+            - name: Publish Latest Package 📦
+              # Release only
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
+              run: |
+                  npm version "${{ github.event.release.tag_name }}" -git-tag-version false -allow-same-version true
+                  npm publish --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Publish Beta Package 📦
+              # Develop branch only
+              if: github.ref == 'refs/heads/develop'
+              run: |
+                  npm version "${{ env.LOCAL_VERSION }}-beta" -git-tag-version false -allow-same-version true          
+                  npm publish --tag beta --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
