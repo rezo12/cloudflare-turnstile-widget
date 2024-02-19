@@ -1,8 +1,6 @@
 # cloudflare-turnstile-widget
 Framework agnostic widget for Cloudflare's open source CAPTCHA, Cloudflare Turnstile
 
-Based off of the following project: https://github.com/capitec/omni-widget
-
 ---
 
 <p align="center">
@@ -75,4 +73,5 @@ Thanks goes to these wonderful people:
 ## License
 Licensed under [MIT](LICENSE)
 
+Based on [`omni-widget`](https://github.com/capitec/omni-widget) licensed under [MIT](THIRDPARTY.md)
 <br>
