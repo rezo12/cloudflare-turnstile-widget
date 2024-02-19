@@ -5,6 +5,17 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "!dist/*.tests.*",
+    "!dist/*.test.*",
+    "!dist/*.spec.*",
+    "src/*.ts",
+    "src/*.js",
+    "!src/*.spec.*",
+    "!src/*.tests.*",
+    "!src/*.test.*"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,7 +29,8 @@
     "cloudflare",
     "turnstile",
     "widget",
-    "typescript"
+    "typescript",
+    "web components"
   ],
   "author": "Benjamin Fourie",
   "license": "MIT",
