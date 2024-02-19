@@ -20,6 +20,16 @@
         "tool",
         "doc"
       ]
+    },
+    {
+      "login": "BOTLANNER",
+      "name": "BOTLANNER",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16349308?v=4",
+      "profile": "https://github.com/BOTLANNER",
+      "contributions": [
+        "code",
+        "tool"
+      ]
     }
   ],
   "contributorsPerLine": 7,
