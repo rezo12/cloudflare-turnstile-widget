@@ -1,4 +1,5 @@
 import { TurnstileWidgetFrame } from './TurnstileWidgetFrame.js';
+import { VERSION } from './version.js';
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
@@ -17,8 +18,8 @@ export class TurnstileWidget extends HTMLElement {
         return this.getAttribute('size') as TurnstileSize;
     }
 
-    public set size(value: string) {
-        if (this.getAttribute('size') !== value) {
+    public set size(value: string | null) {
+        if (this.getAttribute('size') !== value && value) {
             this.setAttribute('size', value);
         }
     }
@@ -27,8 +28,8 @@ export class TurnstileWidget extends HTMLElement {
         return this.getAttribute('theme') as Turnstile.Theme;
     }
 
-    public set theme(value: string) {
-        if (this.getAttribute('theme') !== value) {
+    public set theme(value: string | null) {
+        if (this.getAttribute('theme') !== value && value) {
             this.setAttribute('theme', value);
         }
     }
@@ -41,8 +42,8 @@ export class TurnstileWidget extends HTMLElement {
         return this.getAttribute('sitekey');
     }
 
-    public set sitekey(value: string) {
-        if (this.getAttribute('sitekey') !== value) {
+    public set sitekey(value: string | null) {
+        if (this.getAttribute('sitekey') !== value && value) {
             this.setAttribute('sitekey', value);
         }
     }
@@ -96,7 +97,7 @@ export class TurnstileWidget extends HTMLElement {
         this.iframe.srcdoc = `
             <head>
                 <script src="${SCRIPT_URL}?render=explicit"></script>
-                <script type="module" src="${import.meta.url}"></script>
+                <script type="module" src="https://www.unpkg.com/cloudflare-turnstile-widget@${VERSION}/dist/TurnstileWidgetFrame.js"></script>
             </head>
             <body style="border: none; height: ${height} width: ${width} margin: 0; overflow: hidden;">
                 <turnstile-widget-frame sitekey=${this.sitekey} size="${this.size}" theme=${this.theme}></turnstile-widget-frame>

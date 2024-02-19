@@ -56,15 +56,23 @@ jobs:
               run: |
                   npm ci
 
-            - name: Build Project 🔧
-              run: npm run build
-
-            - name: Bump patch version for beta ☝
+            - name: Manage version for beta ☝
               # Develop branch only
               if: github.ref == 'refs/heads/develop'
               run: |
                   node scripts/unique-version.mjs --tag "beta"
+                  LOCAL_VERSION=$(cat package.json | jq -r .version | awk '{ print tolower($1) }')
+                  node scripts/save-version.mjs --version "${LOCAL_VERSION}" --tag "beta"
 
+            - name: Manage version for tagged releases ☝
+              # Tagged release branch only
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
+              run: |
+                  npm version "${{ github.event.release.tag_name }}" -git-tag-version false -allow-same-version true
+                  node scripts/save-version.mjs --version "${{ github.event.release.tag_name }}"
+
+            - name: Build Project 🔧
+              run: npm run build
 
             - name: Auto Commit Changes 👩‍💻
               uses: stefanzweifel/git-auto-commit-action@v4
@@ -73,6 +81,15 @@ jobs:
               with:
                   commit_message: Updated docs
                   branch: ${{ env.GITHUB_REF_NAME }}
+
+            - name: Auto Commit Changes 👩‍💻
+              uses: stefanzweifel/git-auto-commit-action@v4
+              # Tagged release branch only
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
+              with:
+                  commit_message: Updated docs
+                  branch: main
+                  push_options: '--force'
 
             - name: Update LOCAL_VERSION ⬆
               # Branches only, not releases

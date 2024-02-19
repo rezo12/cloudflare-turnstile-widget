@@ -1,4 +1,5 @@
-import type { BridgeInfo, WidgetEventDetail, TurnstileSize } from './TurnstileWidget';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { BridgeInfo, WidgetEventDetail, TurnstileSize } from './TurnstileWidget.js';
 
 export class TurnstileWidgetFrame extends HTMLElement {
 
@@ -23,8 +24,8 @@ export class TurnstileWidgetFrame extends HTMLElement {
         return this.getAttribute('sitekey');
     }
 
-    public set sitekey(value: string) {
-        if (this.getAttribute('sitekey') !== value) {
+    public set sitekey(value: string | null) {
+        if (this.getAttribute('sitekey') !== value && value) {
             this.setAttribute('sitekey', value);
         }
     }
@@ -37,8 +38,8 @@ export class TurnstileWidgetFrame extends HTMLElement {
         return this.getAttribute('theme') as Turnstile.Theme;
     }
 
-    public set theme(value: string) {
-        if (this.getAttribute('theme') !== value) {
+    public set theme(value: string | null) {
+        if (this.getAttribute('theme') !== value && value) {
             this.setAttribute('theme', value);
         }
     }
@@ -51,8 +52,8 @@ export class TurnstileWidgetFrame extends HTMLElement {
         return this.getAttribute('size') as TurnstileSize;
     }
 
-    public set size(value: string) {
-        if (this.getAttribute('size') !== value) {
+    public set size(value: string | null) {
+        if (this.getAttribute('size') !== value && value) {
             this.setAttribute('size', value);
         }
     }
@@ -77,17 +78,18 @@ export class TurnstileWidgetFrame extends HTMLElement {
         const widgetLoad = (identifier: string): void => {
             div.id = identifier;
             turnstile.ready(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 turnstile.render(div, {
                     sitekey: this.sitekey!,
-                    callback: (token) => {
+                    callback: (token: string) => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'success', token);
                     },
                     'error-callback': () => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error');
                     },
-                    theme: this.theme ?? 'auto'
-                    //size: this.size ?? 'normal'
-                })
+                    theme: this.theme ? this.theme : 'auto',
+                    size: this.size ? this.size : 'normal'
+                } as any)
             });
         }
 
