@@ -34,14 +34,13 @@
     "typescript",
     "web components"
   ],
-  "author": "Benjamin Fourie",
+  "author": "rezo12",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rezo12/cloudflare-turnstile-widget/issues"
   },
   "homepage": "https://github.com/rezo12/cloudflare-turnstile-widget#readme",
   "devDependencies": {
-    "@types/cloudflare-turnstile": "^0.1.4",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "all-contributors-cli": "^6.26.1",
