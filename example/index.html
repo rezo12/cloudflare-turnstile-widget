@@ -8,6 +8,10 @@
 
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, viewport-fit=cover, shrink-to-fit=no" />
         <script type="module" src="./index.js"></script>
+        <script>
+            // Local development targets locally hosted frame source
+            window['turnstile-widget-frame-module-url'] = 'http://localhost:6009/__wds-outside-root__/1/dist/TurnstileWidgetFrame.js';
+        </script>
     </head>
     <body>
         <h1>This is an application with a turnstile-widget hosted in its own frame.</h1>

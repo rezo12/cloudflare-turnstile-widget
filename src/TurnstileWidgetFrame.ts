@@ -1,12 +1,9 @@
-import type { BridgeInfo, WidgetEventDetail, TurnstileSize } from './TurnstileWidget';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { BridgeInfo, WidgetEventDetail } from './TurnstileWidget.js';
 
 export class TurnstileWidgetFrame extends HTMLElement {
-
     private static _currentIdentifier?: string;
 
-    /**
-     * The identifier passed down from the `turnstile-widget` which is hosting the frame.
-    */
     public static get currentIdentifier(): string | undefined {
         return TurnstileWidgetFrame._currentIdentifier;
     }
@@ -15,50 +12,38 @@ export class TurnstileWidgetFrame extends HTMLElement {
         TurnstileWidgetFrame._currentIdentifier = identifier;
     }
 
-    /**
-     * The sitekey that is passed down from the widget.
-     * @attr
-    */
     public get sitekey(): string | null {
         return this.getAttribute('sitekey');
     }
 
-    public set sitekey(value: string) {
-        if (this.getAttribute('sitekey') !== value) {
+    public set sitekey(value: string | null) {
+        if (this.getAttribute('sitekey') !== value && value) {
             this.setAttribute('sitekey', value);
         }
     }
 
-    /**
-     * The theme that is passed down from the widget.
-     * @attr
-    */
-    public get theme(): Turnstile.Theme | null {
-        return this.getAttribute('theme') as Turnstile.Theme;
+    public get theme(): TurnstileTheme | null {
+        return this.getAttribute('theme') as TurnstileTheme;
     }
 
-    public set theme(value: string) {
-        if (this.getAttribute('theme') !== value) {
+    public set theme(value: TurnstileTheme | null) {
+        if (this.getAttribute('theme') !== value && value) {
             this.setAttribute('theme', value);
         }
     }
 
-    /**
-     * The theme that is passed down from the widget.
-     * @attr
-    */
     public get size(): TurnstileSize | null {
         return this.getAttribute('size') as TurnstileSize;
     }
 
-    public set size(value: string) {
-        if (this.getAttribute('size') !== value) {
+    public set size(value: TurnstileSize | null) {
+        if (this.getAttribute('size') !== value && value) {
             this.setAttribute('size', value);
         }
     }
 
     /**
-     * Initialises the component.
+     * Initializes the component.
      *
      * @hideconstructor
      */
@@ -68,7 +53,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
 
     /**
      * Setup the component once added to the DOM.
-    */
+     */
     connectedCallback(): void {
         const div = document.createElement('div');
         div.style.height = '100%';
@@ -77,21 +62,22 @@ export class TurnstileWidgetFrame extends HTMLElement {
         const widgetLoad = (identifier: string): void => {
             div.id = identifier;
             turnstile.ready(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 turnstile.render(div, {
                     sitekey: this.sitekey!,
-                    callback: (token) => {
+                    callback: (token: string) => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'success', token);
                     },
                     'error-callback': () => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error');
                     },
-                    theme: this.theme ?? 'auto'
-                    //size: this.size ?? 'normal'
-                })
+                    theme: this.theme ? this.theme : 'auto',
+                    size: this.size ? this.size : 'normal'
+                } as any);
             });
-        }
+        };
 
-        TurnstileWidgetFrame.initialise(widgetLoad);
+        TurnstileWidgetFrame.initialize(widgetLoad);
     }
 
     /**
@@ -104,17 +90,9 @@ export class TurnstileWidgetFrame extends HTMLElement {
      * @param timeout (Optional) Duration to wait for callback.
      * @param timeoutCallback (Optional) Callback function to invoke if response timeout is exceeded
      * @param callbackIdentifierPrefix (Optional) Prefix to apply on generated widget callback id
-    */
+     */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public static messageApplication<T, U = any>(
-        identifier: string,
-        eventName: string,
-        detail?: T,
-        callback?: (detail: U) => void,
-        timeout?: number,
-        timeoutCallback?: () => void,
-        callbackIdentifierPrefix = 'widget-callback'
-    ): void {
+    public static messageApplication<T, U = any>(identifier: string, eventName: string, detail?: T, callback?: (detail: U) => void, timeout?: number, timeoutCallback?: () => void, callbackIdentifierPrefix = 'widget-callback'): void {
         if (window === window.parent) {
             throw new Error('No parent application to message!');
         }
@@ -161,7 +139,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
 
     /**
      * Generate a unique identifier string
-    */
+     */
     static uuidv4(): string {
         if (crypto && crypto.randomUUID) {
             try {
@@ -177,9 +155,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
-            (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
-        );
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16));
     }
 
     /**
@@ -189,26 +165,12 @@ export class TurnstileWidgetFrame extends HTMLElement {
      * @param detail Custom detail to attach as event detail.
      * @param timeout (Optional) Duration to wait for before rejecting the promise. If not specified, will wait indefinitely.
      * @param callbackIdentifierPrefix (Optional) Prefix to apply on generated widget callback id
-    */
+     */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public static messageApplicationAsync<T, U = any>(
-        identifier: string,
-        eventName: string,
-        detail: T,
-        timeout = 3000,
-        callbackIdentifierPrefix = 'widget-callback'
-    ): Promise<U> {
+    public static messageApplicationAsync<T, U = any>(identifier: string, eventName: string, detail: T, timeout = 3000, callbackIdentifierPrefix = 'widget-callback'): Promise<U> {
         return new Promise<U>((resolve, reject) => {
             try {
-                TurnstileWidgetFrame.messageApplication(
-                    identifier,
-                    eventName,
-                    detail,
-                    resolve,
-                    timeout,
-                    () => reject(new Error(`No response received for '${eventName}' in the given timeout: ${timeout}ms`)),
-                    callbackIdentifierPrefix
-                );
+                TurnstileWidgetFrame.messageApplication(identifier, eventName, detail, resolve, timeout, () => reject(new Error(`No response received for '${eventName}' in the given timeout: ${timeout}ms`)), callbackIdentifierPrefix);
             } catch (error) {
                 reject(error);
             }
@@ -220,7 +182,7 @@ export class TurnstileWidgetFrame extends HTMLElement {
      * Can be used by a widget application to retrieve its identifier from the widget component.
      * @param frameLoaded The callback to invoke when the `frame-load` event occurs.
      */
-    public static initialise(frameLoaded: (identifier: string) => void): void {
+    public static initialize(frameLoaded: (identifier: string) => void): void {
         // Listen for messages on the widget window. Used for communication with the parent application
         const listener = TurnstileWidgetFrame.addEventListener(`frame-load`, (event: WidgetEventDetail<string>) => {
             TurnstileWidgetFrame.currentIdentifier = event.content;
@@ -240,19 +202,14 @@ export class TurnstileWidgetFrame extends HTMLElement {
         // Listen for messages on the widget window. Used for communication with the parent application
         const messageListener = (event: MessageEvent<BridgeInfo<T>>): void => {
             // Check if received message is a parent application message
-            if (
-                typeof event.data === `object` &&
-                event.data.bridgeEvent &&
-                event.data.fromApplication === true &&
-                event.data.bridgeEvent === eventName
-            ) {
+            if (typeof event.data === `object` && event.data.bridgeEvent && event.data.fromApplication === true && event.data.bridgeEvent === eventName) {
                 TurnstileWidgetFrame.currentIdentifier = event.data.identifier;
                 listener({
                     content: event.data.detail as T,
                     callback: event.data.callbackId
                         ? (detail: U): void => {
-                            TurnstileWidgetFrame.messageApplication(event.data.identifier, event.data.callbackId as string, detail);
-                        }
+                              TurnstileWidgetFrame.messageApplication(event.data.identifier, event.data.callbackId as string, detail);
+                          }
                         : undefined
                 });
             }
@@ -274,7 +231,117 @@ export class TurnstileWidgetFrame extends HTMLElement {
 customElements.define('turnstile-widget-frame', TurnstileWidgetFrame);
 
 declare global {
+    const turnstile: Turnstile;
+
     interface HTMLElementTagNameMap {
         'turnstile-widget-frame': TurnstileWidgetFrame;
     }
+
+    interface Window {
+        turnstile?: Turnstile;
+    }
+
+    interface Turnstile {
+        /**
+         * The ready function will be invoked once the DOM is ready, at this point the turnstile can be rendered.
+         * @param callback
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget
+         */
+        ready(callback: () => void): void;
+
+        /**
+         * The render function takes an argument to a HTML widget.
+         * If the invocation is successful, the function returns a widgetId (string).
+         * If the invocation is unsuccessful, the function returns undefined.
+         * @param container
+         * @param params
+         * @returns
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget
+         */
+        render: (container?: string | HTMLElement, params?: RenderOptions) => string | undefined;
+    }
+
+    interface RenderOptions {
+        /**
+         * Every widget has a sitekey. This sitekey is associated with the corresponding widget configuration and is created upon the widget creation.
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         */
+        sitekey: string;
+
+        /**
+         * A callback invoked upon success of the turnstile challenge. The callback is passed a token that can be validated.
+         * @param token
+         * @returns
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         */
+        callback?: (token: string) => void;
+
+        /**
+         * A callback invoked when there is an error (e.g. network error or the challenge failed). Refer to {@link https://developers.cloudflare.com/turnstile/reference/client-side-errors client-side errors}.
+         * @param errorCode
+         * @returns
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         */
+        'error-callback'?: (errorCode: unknown) => void;
+
+        /**
+         * A callback invoked when the token expires and does not reset the widget.
+         * @returns
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         */
+        'expired-callback'?: () => void;
+
+        /**
+         * A callback invoked when a given client/browser is not supported by Turnstile.
+         * @returns
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         */
+        'unsupported-callback'?: () => void;
+
+        /**
+         * The widget theme. Can take the following values: light, dark, auto.
+         * The default is auto, which respects the user preference. This can be forced to light or dark by setting the theme accordingly.
+         * @default 'auto'
+         */
+        theme?: TurnstileTheme;
+
+        /**
+         * The widget size. Can take the following values: normal, compact.
+         * Normal is 300px by 65px, and compact is 130px by 120px.
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#widget-size
+         * @default 'normal'
+         */
+        size?: TurnstileSize;
+
+        /**
+         * Controls whether the widget should automatically retry to obtain a token if it did not succeed.
+         * The default is auto, which will retry automatically. This can be set to never to disable retry upon failure.
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         * @default 'auto'
+         */
+        retry?: TurnstileRetry;
+
+        /**
+         * When retry is set to auto, retry-interval controls the time between retry attempts in milliseconds.
+         * Value must be a positive integer less than 900000, defaults to 8000.
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         * @default 8000
+         */
+        'retry-interval'?: number;
+
+        /**
+         * Automatically refreshes the token when it expires. Can take auto, manual or never, defaults to auto.
+         * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+         * @default 'auto'
+         */
+        'refresh-expired'?: RefreshExpired;
+    }
+
+    type TurnstileTheme = 'auto' | 'light' | 'dark';
+
+    type TurnstileSize = 'normal' | 'compact';
+
+    type TurnstileRetry = 'auto' | 'never';
+
+    type RefreshExpired = 'auto' | 'manual' | 'never';
 }

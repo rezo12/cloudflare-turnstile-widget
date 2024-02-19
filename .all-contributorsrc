@@ -1,6 +1,6 @@
 {
   "projectName": "cloudflare-turnstile-widget",
-  "projectOwner": "Benjamin Fourie",
+  "projectOwner": "rezo12",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -12,7 +12,7 @@
   "contributors": [
     {
       "login": "rezo12",
-      "name": "Benjamin Fourie",
+      "name": "rezo12",
       "avatar_url": "https://avatars.githubusercontent.com/u/33411469?v=4",
       "profile": "https://github.com/rezo12",
       "contributions": [

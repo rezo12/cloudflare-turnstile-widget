@@ -1,6 +1,6 @@
 {
   "name": "cloudflare-turnstile-widget",
-  "version": "0.0.1",
+  "version": "0.0.11",
   "description": "Framework agnostic widget for Cloudflare's open source CAPTCHA, Cloudflare Turnstile",
   "type": "module",
   "main": "dist/index.js",
@@ -19,7 +19,9 @@
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "((node -e \"if (!require('fs').existsSync('./example/node_modules')) { process.exit(1) } \") || (cd ./example && npm i && npm run start)) && cd ./example && npm run start"
+    "debug": "npm run build && npm run serve:silent",
+    "serve": "((node -e \"if (!require('fs').existsSync('./example/node_modules')) { process.exit(1) } \") || (cd ./example && npm i && npm run start)) && cd ./example && npm run start",
+    "serve:silent": "((node -e \"if (!require('fs').existsSync('./example/node_modules')) { process.exit(1) } \") || (cd ./example && npm i && npm run start:silent)) && cd ./example && npm run start:silent"
   },
   "repository": {
     "type": "git",
@@ -32,14 +34,13 @@
     "typescript",
     "web components"
   ],
-  "author": "Benjamin Fourie",
+  "author": "rezo12",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rezo12/cloudflare-turnstile-widget/issues"
   },
   "homepage": "https://github.com/rezo12/cloudflare-turnstile-widget#readme",
   "devDependencies": {
-    "@types/cloudflare-turnstile": "^0.1.4",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "all-contributors-cli": "^6.26.1",

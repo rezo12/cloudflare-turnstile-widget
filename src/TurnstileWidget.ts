@@ -1,4 +1,5 @@
 import { TurnstileWidgetFrame } from './TurnstileWidgetFrame.js';
+import { VERSION } from './version.js';
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
@@ -10,69 +11,70 @@ export class TurnstileWidget extends HTMLElement {
 
     /**
      * Unique identifier for widget with which to track widget specific events.
-    */
+     */
     public readonly identifier: string = TurnstileWidgetFrame.uuidv4();
+
+    public get sitekey(): string | null {
+        return this.getAttribute('sitekey');
+    }
+
+    public set sitekey(value: string | null) {
+        if (this.getAttribute('sitekey') !== value && value) {
+            this.setAttribute('sitekey', value);
+        }
+    }
+
+    public get theme(): TurnstileTheme | null {
+        return this.getAttribute('theme') as TurnstileTheme;
+    }
+
+    public set theme(value: TurnstileTheme | null) {
+        if (this.getAttribute('theme') !== value && value) {
+            this.setAttribute('theme', value);
+        }
+    }
 
     public get size(): TurnstileSize | null {
         return this.getAttribute('size') as TurnstileSize;
     }
 
-    public set size(value: string) {
-        if (this.getAttribute('size') !== value) {
+    public set size(value: TurnstileSize | null) {
+        if (this.getAttribute('size') !== value && value) {
             this.setAttribute('size', value);
         }
     }
 
-    public get theme(): Turnstile.Theme | null {
-        return this.getAttribute('theme') as Turnstile.Theme;
-    }
+    private get widgetFrameURL(): string | undefined {
+        const explicitFrameURL = window['turnstile-widget-frame-module-url'];
 
-    public set theme(value: string) {
-        if (this.getAttribute('theme') !== value) {
-            this.setAttribute('theme', value);
+        if (explicitFrameURL) {
+            return explicitFrameURL;
         }
-    }
 
-    /**
-     * Every widget has a sitekey. This sitekey is associated with the corresponding widget configuration and is created upon the widget creation.
-     * @attr
-    */
-    public get sitekey(): string | null {
-        return this.getAttribute('sitekey');
-    }
-
-    public set sitekey(value: string) {
-        if (this.getAttribute('sitekey') !== value) {
-            this.setAttribute('sitekey', value);
-        }
+        return `https://www.unpkg.com/cloudflare-turnstile-widget@${VERSION}/dist/TurnstileWidgetFrame.js`;
     }
 
     private componentMessageListener = ((event: MessageEvent): void => {
         const eventData = event.data as BridgeInfo<unknown>;
         // Check if received message is a widget message from this wrapper's hosted widget
-        if (
-            typeof event.data === `object` &&
-            eventData.bridgeEvent &&
-            eventData.identifier === this.identifier &&
-            eventData.fromApplication !== true
-        ) {
+        if (typeof event.data === `object` && eventData.bridgeEvent && eventData.identifier === this.identifier && eventData.fromApplication !== true) {
             this.frameMessageReceived(event as MessageEvent<BridgeInfo<unknown>>);
         }
     }).bind(this);
 
     /**
-     * Initialises the component.
+     * Initializes the component.
      *
      * @hideconstructor
-    */
+     */
     constructor() {
         super();
 
         const shadow = this.attachShadow({ mode: 'open' });
         const style = document.createElement('style');
 
-        const height = this.size === 'compact' ? '120px;' : '65px;'
-        const width = this.size === 'compact' ? '130px;' : '300px;'
+        const height = this.size === 'compact' ? '120px;' : '65px;';
+        const width = this.size === 'compact' ? '130px;' : '300px;';
 
         style.textContent = `
             .body {
@@ -96,7 +98,7 @@ export class TurnstileWidget extends HTMLElement {
         this.iframe.srcdoc = `
             <head>
                 <script src="${SCRIPT_URL}?render=explicit"></script>
-                <script type="module" src="${import.meta.url}"></script>
+                <script type="module" src="${this.widgetFrameURL}"></script>
             </head>
             <body style="border: none; height: ${height} width: ${width} margin: 0; overflow: hidden;">
                 <turnstile-widget-frame sitekey=${this.sitekey} size="${this.size}" theme=${this.theme}></turnstile-widget-frame>
@@ -111,7 +113,7 @@ export class TurnstileWidget extends HTMLElement {
 
     /**
      * Setup the component once added to the DOM.
-    */
+     */
     connectedCallback(): void {
         // Listen for messages on the application window. Used for communication with the child widget.
         window.addEventListener('message', this.componentMessageListener);
@@ -119,7 +121,7 @@ export class TurnstileWidget extends HTMLElement {
 
     /**
      * Clean up the component once removed from the DOM.
-    */
+     */
     disconnectedCallback(): void {
         // Cleanup listeners
         window.removeEventListener(`message`, this.componentMessageListener);
@@ -127,7 +129,7 @@ export class TurnstileWidget extends HTMLElement {
 
     /**
      * Dispatch a custom event to say the iframe is loaded, the TurnstileWidgetFrame component listens to this event.
-    */
+     */
     // eslint-disable-next-line @typescript-eslint/require-await
     private async frameLoaded(): Promise<void> {
         // Raise frame load event
@@ -150,8 +152,8 @@ export class TurnstileWidget extends HTMLElement {
                 // Check whether a temporary callback event has been provided, and if so, setup function to return the callback response.
                 callback: event.data.callbackId
                     ? (detail: unknown): void => {
-                        this.messageFrame(event.data.callbackId as string, detail);
-                    }
+                          this.messageFrame(event.data.callbackId as string, detail);
+                      }
                     : undefined
             } as WidgetEventDetail<T>,
             bubbles: true,
@@ -177,16 +179,9 @@ export class TurnstileWidget extends HTMLElement {
      * @param timeout (Optional) Duration to wait for callback.
      * @param timeoutCallback (Optional) Callback function to invoke if response timeout is exceeded
      * @param callbackIdentifierPrefix (Optional) Prefix to apply on generated widget callback id
-    */
+     */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    messageFrame<T = any, U = any>(
-        eventName: string,
-        detail?: T,
-        callback?: (detail: U) => void,
-        timeout?: number,
-        timeoutCallback?: () => void,
-        callbackIdentifierPrefix = 'widget-callback'
-    ): void {
+    messageFrame<T = any, U = any>(eventName: string, detail?: T, callback?: (detail: U) => void, timeout?: number, timeoutCallback?: () => void, callbackIdentifierPrefix = 'widget-callback'): void {
         const frameWindow = this.iframe.contentWindow;
         let callbackId: string | undefined = undefined;
 
@@ -236,19 +231,12 @@ export class TurnstileWidget extends HTMLElement {
      * @param detail Custom detail to attach as event detail.
      * @param timeout (Optional) Duration to wait for before rejecting the promise. If not specified, will wait indefinitely
      * @param callbackIdentifierPrefix (Optional) Prefix to apply on generated widget callback id.
-    */
+     */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     messageFrameAsync<T = any, U = any>(eventName: string, detail?: T, timeout?: number, callbackIdentifierPrefix = 'widget-callback'): Promise<U> {
         return new Promise<U>((resolve, reject) => {
             try {
-                this.messageFrame(
-                    eventName,
-                    detail,
-                    resolve,
-                    timeout,
-                    timeout ? (): void => reject(new Error(`No response received for '${eventName}' in the given timeout: ${timeout}ms`)) : undefined,
-                    callbackIdentifierPrefix
-                );
+                this.messageFrame(eventName, detail, resolve, timeout, timeout ? (): void => reject(new Error(`No response received for '${eventName}' in the given timeout: ${timeout}ms`)) : undefined, callbackIdentifierPrefix);
             } catch (error) {
                 reject(error);
             }
@@ -271,12 +259,14 @@ export type WidgetEventDetail<T = any, U = any> = {
     callback?: (detail: U) => void;
 };
 
-export type TurnstileSize = 'normal' | 'compact';
-
 customElements.define('turnstile-widget', TurnstileWidget);
 
 declare global {
     interface HTMLElementTagNameMap {
         'turnstile-widget': TurnstileWidget;
+    }
+
+    interface Window {
+        'turnstile-widget-frame-module-url': string | undefined;
     }
 }
