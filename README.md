@@ -1,7 +1,32 @@
-# cloudflare-turnstile-widget
-Framework agnostic widget for Cloudflare's open source CAPTCHA, Cloudflare Turnstile
+<h3 align="center">Cloudflare Turnstile Widget</h3>
 
----
+<p align="center">
+  Framework agnostic widget for Cloudflare's free-to-use CAPTCHA service, 
+  <a href="https://developers.cloudflare.com/turnstile/">Cloudflare Turnstile</a>
+</p>
+
+<br />
+
+<p align="center">
+  <img src="https://developers.cloudflare.com/assets/light-success_hu368dc2c5e67cc74c2191fd29410c934a_12471_1113x348_resize_q75_box_3-80edb044.png" width="250"/>
+</p>
+
+<br />
+
+<p align="center">
+	<a href="https://npmcharts.com/compare/cloudflare-turnstile-widget?minimal=true">
+    <img alt="Downloads Per Week" src="https://img.shields.io/npm/dw/cloudflare-turnstile-widget.svg" height="20"/>
+  </a>
+	<a href="https://www.npmjs.com/package/cloudflare-turnstile-widget">
+    <img alt="NPM Version" src="https://img.shields.io/npm/v/cloudflare-turnstile-widget" height="20"/>
+  </a>
+	<a href="https://github.com/cloudflare-turnstile-widget/actions/workflows/build.yml">
+    <img alt="GitHub Build" src="https://github.com/rezo12/cloudflare-turnstile-widget/actions/workflows/build.yml/badge.svg" height="20"/>
+  </a>
+	<a href="https://github.com/rezo12/cloudflare-turnstile-widget/blob/develop/LICENSE">
+    <img alt="MIT License" src="https://img.shields.io/github/license/rezo12/cloudflare-turnstile-widget" height="20"/>
+  </a>
+</p>
 
 <p align="center">
 	[<a href="#introduction">Introduction</a>]
@@ -14,7 +39,9 @@ Framework agnostic widget for Cloudflare's open source CAPTCHA, Cloudflare Turns
 
 ## Introduction
 
--   The `<turnstile-widget>` is a custom iframe that makes the use of cloudflare's CAPTCHA easier in your application.
+- When the requirement is to utilize the Cloudflare's CAPTCHA service in a web component or shadow DOM implementation,
+Cloudflare's script for their CAPTCHA service only queries the document in the DOM tree which presents a problem that this component solves.
+- The `<turnstile-widget>` is a custom iframe that makes the use of cloudflare's CAPTCHA easier in your application without the above mentioned issue.
 
 <br />
 
