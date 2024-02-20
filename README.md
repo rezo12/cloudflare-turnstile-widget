@@ -39,9 +39,9 @@
 
 ## Introduction
 
-- When the requirement is to utilize the Cloudflare's CAPTCHA service in a web component or shadow DOM implementation,
-Cloudflare's script for their CAPTCHA service only queries the document in the DOM tree which presents a problem that this component solves.
-- The `<turnstile-widget>` is a custom iframe that makes the use of cloudflare's CAPTCHA easier in your application without the above mentioned issue.
+-   When the requirement is to utilize the Cloudflare's CAPTCHA service in a web component or shadow DOM implementation,
+    Cloudflare's script for their CAPTCHA service only queries the document in the DOM tree which presents a problem that this component solves.
+-   The `<turnstile-widget>` is a custom iframe that makes the use of cloudflare's CAPTCHA easier in your application without the above mentioned issue.
 
 <br />
 
@@ -76,11 +76,10 @@ document.querySelector('turnstile-widget').addEventListener('success', function 
 <br>
 
 ## Contributors
+
 Thanks goes to these wonderful people:
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
+<!-- readme: contributors -start -->
 <table>
   <tbody>
     <tr>
@@ -89,15 +88,12 @@ Thanks goes to these wonderful people:
     </tr>
   </tbody>
 </table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- readme: contributors -end -->
 
 <br>
 
 ## License
+
 Licensed under [MIT](LICENSE)
 
 Based on [`omni-widget`](https://github.com/capitec/omni-widget) licensed under [MIT](THIRDPARTY.md)
