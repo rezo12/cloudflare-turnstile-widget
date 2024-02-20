@@ -3,6 +3,19 @@ import { VERSION } from './version.js';
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
+/**
+ *
+ * @element turnstile-widget
+ *
+ * @fires frame-load - Dispatched from the component after the frame initially loads.
+ * @fires success - Dispatched when a success callback has been invoked. Event `.detail.content` property will contain the token.
+ * @fires error - Dispatched when an error callback has been invoked. Event `.detail.content` property will contain the error code.
+ * @fires expired - Dispatched when an expired callback has been invoked.
+ * @fires unsupported - Dispatched when an unsupported callback has been invoked.
+ *
+ * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+ *
+ */
 export class TurnstileWidget extends HTMLElement {
     /**
      * Internal instance of `HTMLIFrameElement`.

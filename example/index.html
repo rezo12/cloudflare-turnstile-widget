@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head
-        ><meta charset="utf-8" />
+    <head></head>
+        <meta charset="utf-8" />
         <title>Turnstile Widget Demo</title>
 
         <base href="/" />
@@ -14,8 +14,93 @@
         </script>
     </head>
     <body>
-        <h1>This is an application with a turnstile-widget hosted in its own frame.</h1>
-        <turnstile-widget sitekey="1x00000000000000000000AA" size="compact" theme="dark"></turnstile-widget>
+        <h1>This is an application with <code>turnstile-widget</code>s hosted in their own frames.</h1>
+        <style>
+
+            .container {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .section {
+                display: flex;
+                flex-direction: column;
+                padding-right: 20px;
+            }
+
+            .item {
+                display: flex;
+                flex-direction: row;
+                padding-right: 20px;
+                justify-content: space-between;
+                gap: 20px;
+            }
+
+            .result {
+                align-content: center;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+
+        <div class="container">
+            <div class="section">
+                <div class="item">
+                    <turnstile-widget id="compact-dark-success" sitekey="1x00000000000000000000AA" size="compact" theme="dark"></turnstile-widget>
+                    <div class="result" id="compact-dark-success-result" ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="compact-dark-fail" sitekey="2x00000000000000000000AB" size="compact" theme="dark"></turnstile-widget>
+                    <div class="result" id="compact-dark-fail-result"></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="compact-dark-interactive" sitekey="3x00000000000000000000FF" size="compact" theme="dark"></turnstile-widget>
+                    <div class="result" id="compact-dark-interactive-result" ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="normal-dark-success" sitekey="1x00000000000000000000AA" size="normal" theme="dark"></turnstile-widget>
+                    <div class="result" id="normal-dark-success-result"  ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="normal-dark-fail" sitekey="2x00000000000000000000AB" size="normal" theme="dark"></turnstile-widget>
+                    <div class="result" id="normal-dark-fail-result"  ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="normal-dark-interactive" sitekey="3x00000000000000000000FF" size="normal" theme="dark"></turnstile-widget>
+                    <div class="result" id="normal-dark-interactive-result"  ></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="item">
+                    <turnstile-widget id="compact-light-success" sitekey="1x00000000000000000000AA" size="compact" theme="light"></turnstile-widget>
+                    <div class="result" id="compact-light-success-result"  ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="compact-light-fail" sitekey="2x00000000000000000000AB" size="compact" theme="light"></turnstile-widget>
+                    <div class="result" id="compact-light-fail-result"  ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="compact-light-interactive" sitekey="3x00000000000000000000FF" size="compact" theme="light"></turnstile-widget>
+                    <div class="result" id="compact-light-interactive-result"  ></div>
+                </div>
+
+                <div class="item">
+                    <turnstile-widget id="normal-light-success" sitekey="1x00000000000000000000AA" size="normal" theme="light"></turnstile-widget>
+                    <div class="result" id="normal-light-success-result"  ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="normal-light-fail" sitekey="2x00000000000000000000AB" size="normal" theme="light"></turnstile-widget>
+                    <div class="result" id="normal-light-fail-result"  ></div>
+                </div>
+                <div class="item">
+                    <turnstile-widget id="normal-light-interactive" sitekey="3x00000000000000000000FF" size="normal" theme="light"></turnstile-widget>
+                    <div class="result" id="normal-light-interactive-result"  ></div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
 
