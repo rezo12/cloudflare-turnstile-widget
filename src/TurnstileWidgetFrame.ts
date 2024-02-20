@@ -62,18 +62,23 @@ export class TurnstileWidgetFrame extends HTMLElement {
         const widgetLoad = (identifier: string): void => {
             div.id = identifier;
             turnstile.ready(() => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 turnstile.render(div, {
                     sitekey: this.sitekey!,
                     callback: (token: string) => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'success', token);
                     },
-                    'error-callback': () => {
-                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error');
+                    'error-callback': (errorCode: unknown) => {
+                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error', errorCode);
+                    },
+                    'expired-callback': () => {
+                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'expired');
+                    },
+                    'unsupported-callback': () => {
+                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'unsupported');
                     },
                     theme: this.theme ? this.theme : 'auto',
                     size: this.size ? this.size : 'normal'
-                } as any);
+                });
             });
         };
 
