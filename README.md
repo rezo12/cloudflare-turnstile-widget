@@ -54,7 +54,7 @@ import 'cloudflare-turnstile-widget';
 3️⃣ &nbsp; Use the widget in your application.
 
 ```html
-<turnstile-widget sitekey="1x00000000000000000000AA" size="compact" theme="dark"></turnstile-widget>
+<turnstile-widget site-key="1x00000000000000000000AA" size="compact" theme="dark"></turnstile-widget>
 ```
 
 4️⃣ &nbsp; Use event listeners to receive messages from the widget.
