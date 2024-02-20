@@ -68,7 +68,7 @@ export class TurnstileWidget extends HTMLElement {
     }
 
     public get refreshExpired(): RefreshExpired | null {
-        return this.getAttribute('refreshExpired') as RefreshExpired;
+        return this.getAttribute('refresh-expired') as RefreshExpired;
     }
 
     public set refreshExpired(value: RefreshExpired | null) {
