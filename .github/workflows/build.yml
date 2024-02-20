@@ -33,6 +33,18 @@ jobs:
                 node-version: [16.x]
 
         steps:
+            - name: Contribute List
+              uses: akhilmhdh/contributors-readme-action@v2.3.6
+              # Only on branch pushes, not on tagged releases
+              if: ${{ startsWith(github.ref, 'refs/heads/') }}
+              with:
+                    image_size: 100
+                    use_username: true
+                    readme_path: "README.md"
+                    auto_detect_branch_protection: false
+              env:
+                    GITHUB_TOKEN: ${{ secrets.CONTRIBUTION_AUTOMATION }}
+
             - name: Checkout 🛎️
               uses: actions/checkout@v3
               with:

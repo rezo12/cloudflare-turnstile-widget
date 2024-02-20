@@ -7,8 +7,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "node scripts/build.js",
-        "start": "wds --node-resolve --open --watch --root-dir . --app-index ./index.html --port 6009",
-        "start:silent": "wds --node-resolve --watch --root-dir . --app-index ./index.html --port 6009"
+		"start": "wds --node-resolve --open --watch --root-dir . --app-index ./index.html --port 6009",
+		"start:silent": "wds --node-resolve --watch --root-dir . --app-index ./index.html --port 6009"
 	},
 	"keywords": [],
 	"author": "",
@@ -17,7 +17,7 @@
 	},
 	"license": "ISC",
 	"devDependencies": {
-		"@web/dev-server": "^0.1.35",
+		"@web/dev-server": "^0.4.3",
 		"command-line-args": "^5.2.1",
 		"esbuild": "^0.16.9",
 		"fs-extra": "^10.1.0",

@@ -1,7 +1,7 @@
 {
   "name": "cloudflare-turnstile-widget",
   "version": "0.1.0",
-  "description": "Framework agnostic widget for Cloudflare's open source CAPTCHA, Cloudflare Turnstile",
+  "description": "Framework agnostic widget for Cloudflare's free-to-use CAPTCHA service, Cloudflare Turnstile.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,7 +31,12 @@
     "cloudflare",
     "turnstile",
     "widget",
+    "CAPTCHA",
     "typescript",
+    "javascript",
+    "UI",
+    "web",
+    "web component",
     "web components"
   ],
   "author": "rezo12",
@@ -43,7 +48,6 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
-    "all-contributors-cli": "^6.26.1",
     "command-line-args": "^5.2.1",
     "eslint": "^8.56.0",
     "package-json": "^9.0.0",

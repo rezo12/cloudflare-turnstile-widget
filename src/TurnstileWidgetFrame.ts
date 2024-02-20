@@ -12,13 +12,13 @@ export class TurnstileWidgetFrame extends HTMLElement {
         TurnstileWidgetFrame._currentIdentifier = identifier;
     }
 
-    public get sitekey(): string | null {
-        return this.getAttribute('sitekey');
+    public get siteKey(): string | null {
+        return this.getAttribute('site-key');
     }
 
-    public set sitekey(value: string | null) {
-        if (this.getAttribute('sitekey') !== value && value) {
-            this.setAttribute('sitekey', value);
+    public set siteKey(value: string | null) {
+        if (this.getAttribute('site-key') !== value && value) {
+            this.setAttribute('site-key', value);
         }
     }
 
@@ -42,6 +42,26 @@ export class TurnstileWidgetFrame extends HTMLElement {
         }
     }
 
+    public get retry(): TurnstileRetry | null {
+        return this.getAttribute('retry') as TurnstileRetry;
+    }
+
+    public set retry(value: TurnstileRetry | null) {
+        if (this.getAttribute('retry') !== value && value) {
+            this.setAttribute('retry', value);
+        }
+    }
+
+    public get refreshExpired(): RefreshExpired | null {
+        return this.getAttribute('refresh-expired') as RefreshExpired;
+    }
+
+    public set refreshExpired(value: RefreshExpired | null) {
+        if (this.getAttribute('refresh-expired') !== value && value) {
+            this.setAttribute('refresh-expired', value);
+        }
+    }
+
     /**
      * Initializes the component.
      *
@@ -62,18 +82,25 @@ export class TurnstileWidgetFrame extends HTMLElement {
         const widgetLoad = (identifier: string): void => {
             div.id = identifier;
             turnstile.ready(() => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 turnstile.render(div, {
-                    sitekey: this.sitekey!,
+                    sitekey: this.siteKey!,
                     callback: (token: string) => {
                         TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'success', token);
                     },
-                    'error-callback': () => {
-                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error');
+                    'error-callback': (errorCode: unknown) => {
+                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'error', errorCode);
+                    },
+                    'expired-callback': () => {
+                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'expired');
+                    },
+                    'unsupported-callback': () => {
+                        TurnstileWidgetFrame.messageApplication(TurnstileWidgetFrame.currentIdentifier!, 'unsupported');
                     },
                     theme: this.theme ? this.theme : 'auto',
-                    size: this.size ? this.size : 'normal'
-                } as any);
+                    size: this.size ? this.size : 'normal',
+                    retry: this.retry ? this.retry : 'auto',
+                    'refresh-expired': this.refreshExpired ? this.refreshExpired : 'auto'
+                });
             });
         };
 

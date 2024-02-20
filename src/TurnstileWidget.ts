@@ -3,6 +3,19 @@ import { VERSION } from './version.js';
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
+/**
+ *
+ * @element turnstile-widget
+ *
+ * @fires frame-load - Dispatched from the component after the frame initially loads.
+ * @fires success - Dispatched when a success callback has been invoked. Event `.detail.content` property will contain the token.
+ * @fires error - Dispatched when an error callback has been invoked. Event `.detail.content` property will contain the error code.
+ * @fires expired - Dispatched when an expired callback has been invoked.
+ * @fires unsupported - Dispatched when an unsupported callback has been invoked.
+ *
+ * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+ *
+ */
 export class TurnstileWidget extends HTMLElement {
     /**
      * Internal instance of `HTMLIFrameElement`.
@@ -14,13 +27,13 @@ export class TurnstileWidget extends HTMLElement {
      */
     public readonly identifier: string = TurnstileWidgetFrame.uuidv4();
 
-    public get sitekey(): string | null {
-        return this.getAttribute('sitekey');
+    public get siteKey(): string | null {
+        return this.getAttribute('site-key');
     }
 
-    public set sitekey(value: string | null) {
-        if (this.getAttribute('sitekey') !== value && value) {
-            this.setAttribute('sitekey', value);
+    public set siteKey(value: string | null) {
+        if (this.getAttribute('site-key') !== value && value) {
+            this.setAttribute('site-key', value);
         }
     }
 
@@ -41,6 +54,26 @@ export class TurnstileWidget extends HTMLElement {
     public set size(value: TurnstileSize | null) {
         if (this.getAttribute('size') !== value && value) {
             this.setAttribute('size', value);
+        }
+    }
+
+    public get retry(): TurnstileRetry | null {
+        return this.getAttribute('retry') as TurnstileRetry;
+    }
+
+    public set retry(value: TurnstileRetry | null) {
+        if (this.getAttribute('retry') !== value && value) {
+            this.setAttribute('retry', value);
+        }
+    }
+
+    public get refreshExpired(): RefreshExpired | null {
+        return this.getAttribute('refresh-expired') as RefreshExpired;
+    }
+
+    public set refreshExpired(value: RefreshExpired | null) {
+        if (this.getAttribute('refresh-expired') !== value && value) {
+            this.setAttribute('refresh-expired', value);
         }
     }
 
@@ -101,7 +134,13 @@ export class TurnstileWidget extends HTMLElement {
                 <script type="module" src="${this.widgetFrameURL}"></script>
             </head>
             <body style="border: none; height: ${height} width: ${width} margin: 0; overflow: hidden;">
-                <turnstile-widget-frame sitekey=${this.sitekey} size="${this.size}" theme=${this.theme}></turnstile-widget-frame>
+                <turnstile-widget-frame
+                    site-key="${this.siteKey}"
+                    theme="${this.theme ? this.theme : 'auto'}"
+                    size="${this.size ? this.size : 'normal'}"
+                    retry="${this.retry ? this.retry : 'auto'}"
+                    refresh-expired="${this.refreshExpired ? this.refreshExpired : 'auto'}">
+                </turnstile-widget-frame>
             </body>
         `;
 
