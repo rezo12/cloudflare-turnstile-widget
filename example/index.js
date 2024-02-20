@@ -1,15 +1,5 @@
 import 'cloudflare-turnstile-widget';
 
-function success(e) {
-    const message = e.detail.content;
-    console.log(message);
-}
-
-function error(e) {
-    const message = e.detail.content;
-    console.log(message);
-}
-
 document.addEventListener("DOMContentLoaded", function () {
     const sizes = ['compact', 'normal'];
     const results = ['success', 'fail', 'interactive'];
@@ -28,21 +18,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 component.addEventListener('success', (e) => {
                     const message = e.detail.content;
                     componentResult.textContent = message;
-                })
+                });
                 component.addEventListener('error', (e) => {
                     const message = e.detail.content;
                     componentResult.textContent = message;
-                })
+                });
                 component.addEventListener('expired', (e) => {
                     componentResult.textContent = 'Expired';
-                })
+                });
                 component.addEventListener('unsupported', (e) => {
                     componentResult.textContent = 'Unsupported';
-                })
-
+                });
             }
-
         }
-
     }
 });
