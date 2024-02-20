@@ -1,6 +1,6 @@
 {
   "name": "cloudflare-turnstile-widget",
-  "version": "0.0.13",
+  "version": "0.1.0",
   "description": "Framework agnostic widget for Cloudflare's free-to-use CAPTCHA service, Cloudflare Turnstile.",
   "type": "module",
   "main": "dist/index.js",
