@@ -14,18 +14,10 @@
 <br />
 
 <p align="center">
-	<a href="https://npmcharts.com/compare/cloudflare-turnstile-widget?minimal=true">
-    <img alt="Downloads Per Week" src="https://img.shields.io/npm/dw/cloudflare-turnstile-widget.svg" height="20"/>
-  </a>
-	<a href="https://www.npmjs.com/package/cloudflare-turnstile-widget">
-    <img alt="NPM Version" src="https://img.shields.io/npm/v/cloudflare-turnstile-widget" height="20"/>
-  </a>
-	<a href="https://github.com/cloudflare-turnstile-widget/actions/workflows/build.yml">
-    <img alt="GitHub Build" src="https://github.com/rezo12/cloudflare-turnstile-widget/actions/workflows/build.yml/badge.svg" height="20"/>
-  </a>
-	<a href="https://github.com/rezo12/cloudflare-turnstile-widget/blob/develop/LICENSE">
-    <img alt="MIT License" src="https://img.shields.io/github/license/rezo12/cloudflare-turnstile-widget" height="20"/>
-  </a>
+	<a href="https://npmcharts.com/compare/cloudflare-turnstile-widget?minimal=true"><img alt="Downloads Per Week" src="https://img.shields.io/npm/dw/cloudflare-turnstile-widget.svg" height="20"/></a>
+	<a href="https://www.npmjs.com/package/cloudflare-turnstile-widget"><img alt="NPM Version" src="https://img.shields.io/npm/v/cloudflare-turnstile-widget" height="20"/></a>
+	<a href="https://github.com/cloudflare-turnstile-widget/actions/workflows/build.yml"><img alt="GitHub Build" src="https://github.com/rezo12/cloudflare-turnstile-widget/actions/workflows/build.yml/badge.svg" height="20"/></a>
+	<a href="https://github.com/rezo12/cloudflare-turnstile-widget/blob/develop/LICENSE"><img alt="MIT License" src="https://img.shields.io/github/license/rezo12/cloudflare-turnstile-widget" height="20"/></a>
 </p>
 
 <p align="center">
