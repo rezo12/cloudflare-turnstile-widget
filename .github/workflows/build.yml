@@ -43,7 +43,7 @@ jobs:
                     readme_path: "README.md"
                     auto_detect_branch_protection: false
               env:
-                    GITHUB_TOKEN: ${{ secrets.PROTECTED_TOKEN }}
+                    GITHUB_TOKEN: ${{ secrets.CONTRIBUTION_AUTOMATION }}
 
             - name: Checkout 🛎️
               uses: actions/checkout@v3
