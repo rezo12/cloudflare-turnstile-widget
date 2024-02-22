@@ -20,13 +20,18 @@ export class TurnstileWidget extends HTMLElement {
     /**
      * Internal instance of `HTMLIFrameElement`.
      */
-    public readonly iframe: HTMLIFrameElement;
+    public iframe!: HTMLIFrameElement;
 
     /**
      * Unique identifier for widget with which to track widget specific events.
      */
     public readonly identifier: string = TurnstileWidgetFrame.uuidv4();
 
+    /**
+     * Every widget has a sitekey. This sitekey is associated with the corresponding widget configuration and is created upon the widget creation.
+     * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+     * @attr site-key
+     */
     public get siteKey(): string | null {
         return this.getAttribute('site-key');
     }
@@ -37,6 +42,12 @@ export class TurnstileWidget extends HTMLElement {
         }
     }
 
+    /**
+     * The widget theme. Can take the following values: light, dark, auto.
+     * The default is auto, which respects the user preference. This can be forced to light or dark by setting the theme accordingly.
+     * @default 'auto'
+     * @attr
+     */
     public get theme(): TurnstileTheme | null {
         return this.getAttribute('theme') as TurnstileTheme;
     }
@@ -47,6 +58,13 @@ export class TurnstileWidget extends HTMLElement {
         }
     }
 
+    /**
+     * The widget size. Can take the following values: normal, compact.
+     * Normal is 300px by 65px, and compact is 130px by 120px.
+     * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#widget-size
+     * @default 'normal'
+     * @attr
+     */
     public get size(): TurnstileSize | null {
         return this.getAttribute('size') as TurnstileSize;
     }
@@ -57,6 +75,13 @@ export class TurnstileWidget extends HTMLElement {
         }
     }
 
+    /**
+     * Controls whether the widget should automatically retry to obtain a token if it did not succeed.
+     * The default is auto, which will retry automatically. This can be set to never to disable retry upon failure.
+     * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+     * @default 'auto'
+     * @attr
+     */
     public get retry(): TurnstileRetry | null {
         return this.getAttribute('retry') as TurnstileRetry;
     }
@@ -67,6 +92,12 @@ export class TurnstileWidget extends HTMLElement {
         }
     }
 
+    /**
+     * Automatically refreshes the token when it expires. Can take auto, manual or never, defaults to auto.
+     * @see https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#configurations
+     * @default 'auto'
+     * @attr refresh-expired
+     */
     public get refreshExpired(): RefreshExpired | null {
         return this.getAttribute('refresh-expired') as RefreshExpired;
     }
@@ -102,8 +133,17 @@ export class TurnstileWidget extends HTMLElement {
      */
     constructor() {
         super();
+        this.attachShadow({ mode: 'open' });
+    }
 
-        const shadow = this.attachShadow({ mode: 'open' });
+    /**
+     * Setup the component once added to the DOM.
+     */
+    connectedCallback(): void {
+        // Listen for messages on the application window. Used for communication with the child widget.
+        window.addEventListener('message', this.componentMessageListener);
+
+        this.iframe = document.createElement('iframe');
         const style = document.createElement('style');
 
         const height = this.size === 'compact' ? '120px;' : '65px;';
@@ -123,9 +163,7 @@ export class TurnstileWidget extends HTMLElement {
             }
         `;
 
-        shadow.appendChild(style);
-
-        this.iframe = document.createElement('iframe');
+        this.shadowRoot?.appendChild(style);
         this.iframe.classList.add('body');
 
         this.iframe.srcdoc = `
@@ -146,16 +184,7 @@ export class TurnstileWidget extends HTMLElement {
 
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.iframe.addEventListener('load', () => this.frameLoaded());
-
-        shadow.appendChild(this.iframe);
-    }
-
-    /**
-     * Setup the component once added to the DOM.
-     */
-    connectedCallback(): void {
-        // Listen for messages on the application window. Used for communication with the child widget.
-        window.addEventListener('message', this.componentMessageListener);
+        this.shadowRoot?.appendChild(this.iframe);
     }
 
     /**
@@ -164,6 +193,9 @@ export class TurnstileWidget extends HTMLElement {
     disconnectedCallback(): void {
         // Cleanup listeners
         window.removeEventListener(`message`, this.componentMessageListener);
+
+        const children = Array.from([...(this.shadowRoot?.children ?? [])]);
+        children.forEach((c) => c.remove());
     }
 
     /**
